@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import HealthTip from "../components/HealthTip";
+
 import {
   Sparkles,
   Calendar,
@@ -190,7 +192,7 @@ const Home = () => {
             <span className="text-xs text-[#CBD5E1] block mt-1">Women Choice Rating</span>
           </GlassCard>
         </motion.div>
-
+        <HealthTip />
       </section>
 
       {/* How LUVIA Works Section */}
