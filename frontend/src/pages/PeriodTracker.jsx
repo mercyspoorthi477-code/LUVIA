@@ -470,7 +470,7 @@ text-slate-400
 mt-2
 ">
 
-Track your cycle phases, symptoms and health.
+Track your cycle, monitor symptoms, and stay informed about your reproductive health.
 
 </p>
 
