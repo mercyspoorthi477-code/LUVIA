@@ -8,7 +8,6 @@ User,
 X
 } from "lucide-react";
 
-
 import {motion,AnimatePresence} from "framer-motion";
 
 import api from "../services/api";
@@ -17,10 +16,9 @@ import GlassCard from "../components/GlassCard";
 
 import Button from "../components/Button";
 
-
+import HealthStats from "../components/HealthStats";
 
 const HealthHub=()=>{
-
 
 const [articles,setArticles]=useState([]);
 
@@ -29,8 +27,6 @@ const [category,setCategory]=useState("All");
 const [search,setSearch]=useState("");
 
 const [selected,setSelected]=useState(null);
-
-
 
 const categories=[
 "All",
@@ -41,11 +37,7 @@ const categories=[
 "Mental Health"
 ];
 
-
-
-
 useEffect(()=>{
-
 
 api.get("/article/all")
 
@@ -61,15 +53,9 @@ console.log(err);
 
 });
 
-
 },[]);
 
-
-
-
-
 const filtered=articles.filter(a=>{
-
 
 return (
 
@@ -90,30 +76,23 @@ a.summary.toLowerCase()
 
 );
 
-
 });
-
-
-
-
 
 return(
 
 <div className="min-h-screen text-white pt-24 px-6 pb-16">
 
-
 <div className="max-w-7xl mx-auto space-y-8">
-
 
 <h1 className="text-4xl font-bold flex gap-3">
 
 <BookOpen/>
 
+<HealthStats totalArticles={filtered.length}/>
+
 Health & Hormone Hub
 
 </h1>
-
-
 
 <input
 
@@ -129,10 +108,7 @@ e=>setSearch(e.target.value)
 
 />
 
-
-
 <div className="flex gap-3 flex-wrap">
-
 
 {
 categories.map(c=>(
@@ -157,24 +133,16 @@ category===c
 
 </button>
 
-
 ))
 
 }
 
-
 </div>
-
-
-
-
 
 <div className="grid md:grid-cols-3 gap-6">
 
-
 {
 filtered.map(article=>(
-
 
 <GlassCard
 
@@ -184,7 +152,6 @@ className="overflow-hidden"
 
 >
 
-
 <img
 
 src={article.image}
@@ -193,10 +160,7 @@ className="h-48 w-full object-cover"
 
 />
 
-
-
 <div className="p-5 space-y-3">
-
 
 <p className="text-cyan-300 text-sm">
 
@@ -204,22 +168,17 @@ className="h-48 w-full object-cover"
 
 </p>
 
-
 <h2 className="text-xl font-bold">
 
 {article.title}
 
 </h2>
 
-
-
 <p className="text-gray-300 text-sm">
 
 {article.summary}
 
 </p>
-
-
 
 <Button
 
@@ -231,27 +190,17 @@ Read More
 
 </Button>
 
-
-
 </div>
 
-
 </GlassCard>
-
 
 ))
 
 }
 
-
 </div>
 
-
-
-
-
 <AnimatePresence>
-
 
 {
 selected &&
@@ -262,9 +211,7 @@ className="fixed inset-0 bg-black/80 flex items-center justify-center p-5"
 
 >
 
-
 <div className="bg-gray-900 p-8 rounded-3xl max-w-3xl">
-
 
 <button
 
@@ -276,13 +223,11 @@ onClick={()=>setSelected(null)}
 
 </button>
 
-
 <h2 className="text-3xl font-bold">
 
 {selected.title}
 
 </h2>
-
 
 <p className="mt-5 text-gray-300 whitespace-pre-line">
 
@@ -290,30 +235,20 @@ onClick={()=>setSelected(null)}
 
 </p>
 
-
 </div>
-
-
 
 </motion.div>
 
 }
 
-
-
 </AnimatePresence>
 
-
 </div>
 
-
 </div>
-
 
 );
 
-
 };
-
 
 export default HealthHub;
