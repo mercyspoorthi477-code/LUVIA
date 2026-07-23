@@ -17,6 +17,7 @@ import Diet from './pages/Diet';
 import ProductReviews from './pages/ProductReviews';
 import Caregiver from './pages/Caregiver';
 import Notifications from './pages/Notifications';
+import ArticleDetails from "./pages/ArticleDetails";
 
 function App() {
   return (
@@ -50,6 +51,12 @@ function App() {
               <Route path="/reviews" element={<ProductReviews />} />
               <Route path="/caregiver" element={<Caregiver />} />
               <Route path="/notifications" element={<Notifications />} />
+              <Route path="/health" element={<HealthHub />} />
+
+<Route
+  path="/article/:id"
+  element={<ArticleDetails />}
+/>
             </Routes>
           </main>
         </div>

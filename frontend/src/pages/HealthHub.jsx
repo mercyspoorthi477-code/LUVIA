@@ -1,254 +1,276 @@
-import React,{useState,useEffect} from "react";
-
-import {
-BookOpen,
-Search,
-Clock,
-User,
-X
-} from "lucide-react";
-
-import {motion,AnimatePresence} from "framer-motion";
-
+import React, { useState, useEffect } from "react";
+import { BookOpen, Search, Clock, User, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "../services/api";
-
 import GlassCard from "../components/GlassCard";
-
 import Button from "../components/Button";
-
 import HealthStats from "../components/HealthStats";
 
-const HealthHub=()=>{
+const HealthHub = () => {
+  const [articles, setArticles] = useState([]);
+  const [category, setCategory] = useState("All");
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState(null);
 
-const [articles,setArticles]=useState([]);
+  const categories = [
+    "All",
+    "Periods",
+    "PCOS",
+    "Nutrition",
+    "Exercise",
+    "Mental Health",
+  ];
 
-const [category,setCategory]=useState("All");
+  useEffect(() => {
+    api
+      .get("/article/all")
+      .then((res) => setArticles(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
-const [search,setSearch]=useState("");
+  const filtered = articles.filter(
+    (a) =>
+      (category === "All" || a.category === category) &&
+      (a.title.toLowerCase().includes(search.toLowerCase()) ||
+        a.summary.toLowerCase().includes(search.toLowerCase()))
+  );
 
-const [selected,setSelected]=useState(null);
+  return (
+    <div className="min-h-screen text-white pt-24 px-6 pb-16">
 
-const categories=[
-"All",
-"Periods",
-"PCOS",
-"Nutrition",
-"Exercise",
-"Mental Health"
-];
+      <div className="max-w-7xl mx-auto space-y-8">
 
-useEffect(()=>{
+        <h1 className="text-4xl font-bold flex items-center gap-3">
+          <BookOpen />
+          Health & Hormone Hub
+        </h1>
 
-api.get("/article/all")
+        <HealthStats totalArticles={filtered.length} />
 
-.then(res=>{
+        <div className="relative">
+          <Search className="absolute left-4 top-4 text-gray-400" size={20} />
 
-setArticles(res.data);
+          <input
+            className="w-full pl-12 p-4 rounded-xl bg-white/10 border border-white/10"
+            placeholder="Search articles..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
-})
 
-.catch(err=>{
+        <div className="flex flex-wrap gap-3">
 
-console.log(err);
+          {categories.map((c) => (
 
-});
+            <button
+              key={c}
+              onClick={() => setCategory(c)}
+              className={`px-4 py-2 rounded-full transition ${
+                category === c
+                  ? "bg-purple-500"
+                  : "bg-white/10 hover:bg-white/20"
+              }`}
+            >
+              {c}
+            </button>
 
-},[]);
+          ))}
 
-const filtered=articles.filter(a=>{
+        </div>
 
-return (
 
-(category==="All"||a.category===category)
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-&&
+          {filtered.map((article) => (
 
-(
-a.title.toLowerCase()
-.includes(search.toLowerCase())
+            <GlassCard
+              key={article._id}
+              className="overflow-hidden hover:scale-[1.02] transition cursor-pointer"
+              onClick={() => setSelected(article)}
+            >
 
-||
+              <img
+                src={article.image}
+                alt={article.title}
+                className="h-52 w-full object-cover"
+              />
 
-a.summary.toLowerCase()
-.includes(search.toLowerCase())
 
-)
+              <div className="p-5 space-y-3">
 
-);
 
-});
+                <span className="text-cyan-300 text-sm">
+                  {article.category}
+                </span>
 
-return(
 
-<div className="min-h-screen text-white pt-24 px-6 pb-16">
+                <h2 className="text-xl font-bold">
+                  {article.title}
+                </h2>
 
-<div className="max-w-7xl mx-auto space-y-8">
 
-<h1 className="text-4xl font-bold flex gap-3">
+                <p className="text-gray-300 text-sm line-clamp-3">
+                  {article.summary}
+                </p>
 
-<BookOpen/>
 
-<HealthStats totalArticles={filtered.length}/>
+              </div>
 
-Health & Hormone Hub
 
-</h1>
+            </GlassCard>
 
-<input
+          ))}
 
-className="w-full p-3 rounded-xl bg-white/10"
+        </div>
 
-placeholder="Search health topics..."
 
-value={search}
+      </div>
 
-onChange={
-e=>setSearch(e.target.value)
-}
 
-/>
 
-<div className="flex gap-3 flex-wrap">
+      <AnimatePresence>
 
-{
-categories.map(c=>(
+        {selected && (
 
-<button
+          <motion.div
 
-key={c}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
 
-onClick={()=>setCategory(c)}
+            className="fixed inset-0 bg-black/80 flex justify-center items-center p-5 z-50"
 
-className={`px-4 py-2 rounded-full ${
-category===c
-?
-"bg-purple-500"
-:
-"bg-white/10"
-}`}
+          >
 
->
 
-{c}
+            <motion.div
 
-</button>
+              initial={{ scale: .9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: .9 }}
 
-))
+              className="bg-[#13131f] rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
 
-}
+            >
 
-</div>
 
-<div className="grid md:grid-cols-3 gap-6">
+              <img
 
-{
-filtered.map(article=>(
+                src={selected.image}
+                alt={selected.title}
+                className="w-full h-72 object-cover rounded-t-3xl"
 
-<GlassCard
+              />
 
-key={article._id}
 
-className="overflow-hidden"
 
->
+              <div className="p-8">
 
-<img
 
-src={article.image}
+                <div className="flex justify-between items-start">
 
-className="h-48 w-full object-cover"
 
-/>
+                  <div>
 
-<div className="p-5 space-y-3">
 
-<p className="text-cyan-300 text-sm">
+                    <p className="text-cyan-300">
+                      {selected.category}
+                    </p>
 
-{article.category}
 
-</p>
+                    <h2 className="text-4xl font-bold mt-2">
+                      {selected.title}
+                    </h2>
 
-<h2 className="text-xl font-bold">
 
-{article.title}
 
-</h2>
+                    <div className="flex gap-5 mt-4 text-gray-400">
 
-<p className="text-gray-300 text-sm">
 
-{article.summary}
+                      <span className="flex items-center gap-2">
 
-</p>
+                        <User size={16}/>
 
-<Button
+                        {selected.author || "LUVIA Team"}
 
-onClick={()=>setSelected(article)}
+                      </span>
 
->
 
-Read More
 
-</Button>
+                      <span className="flex items-center gap-2">
 
-</div>
+                        <Clock size={16}/>
 
-</GlassCard>
+                        {selected.readTime || "5 min read"}
 
-))
+                      </span>
 
-}
 
-</div>
+                    </div>
 
-<AnimatePresence>
 
-{
-selected &&
+                  </div>
 
-<motion.div
 
-className="fixed inset-0 bg-black/80 flex items-center justify-center p-5"
 
->
 
-<div className="bg-gray-900 p-8 rounded-3xl max-w-3xl">
+                  <button
 
-<button
+                    onClick={() => setSelected(null)}
 
-onClick={()=>setSelected(null)}
+                    className="bg-red-500 p-2 rounded-full"
 
->
+                  >
 
-<X/>
+                    <X/>
 
-</button>
+                  </button>
 
-<h2 className="text-3xl font-bold">
 
-{selected.title}
 
-</h2>
+                </div>
 
-<p className="mt-5 text-gray-300 whitespace-pre-line">
 
-{selected.content}
 
-</p>
 
-</div>
 
-</motion.div>
+                <p className="mt-8 text-gray-300 leading-8 whitespace-pre-line">
 
-}
 
-</AnimatePresence>
+                  {selected.content ||
+                    selected.summary ||
+                    "Content coming soon..."}
 
-</div>
 
-</div>
+                </p>
 
-);
 
+
+
+              </div>
+
+
+
+
+            </motion.div>
+
+
+
+
+          </motion.div>
+
+
+        )}
+
+
+
+      </AnimatePresence>
+
+
+    </div>
+  );
 };
+
 
 export default HealthHub;
