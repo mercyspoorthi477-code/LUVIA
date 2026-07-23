@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
-require("dotenv").config({
-    path:"../.env"
-});
+require("dotenv").config();
 
 const Diet = require("../models/Diet");
 
